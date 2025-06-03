@@ -33,12 +33,17 @@ const Newscard: React.FC<{ article: NewsCardProps['article'] }> = ({ article }) 
       className="flex w-full max-w-3xl bg-white border border-gray-200 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 min-h-[180px]"
     >
       {/* Left - Image */}
-      <div className="w-2/5 relative min-h-[180px]">
+      <div
+        className="w-2/5 relative min-h-[180px]"
+        style={{ width: '40%', minHeight: 180 }}
+      >
         <img
           src={image_url || defaultImg.src}
-          alt={title}
+          alt={title || 'News image'}
           className="object-cover w-full h-full"
           loading="lazy"
+          decoding="async"
+          importance="low"
         />
       </div>
 
@@ -53,13 +58,17 @@ const Newscard: React.FC<{ article: NewsCardProps['article'] }> = ({ article }) 
           <div className="flex items-center gap-2 max-w-[60%]">
             <img
               src={source_icon}
-              alt={source_name}
+              alt={source_name || 'Source icon'}
               width={16}
               height={16}
               className="object-contain"
               loading="lazy"
+              decoding="async"
             />
-            <span className="text-xs text-gray-500 max-w-[100px] truncate block" title={source_name}>
+            <span
+              className="text-xs text-gray-500 max-w-[100px] truncate block"
+              title={source_name}
+            >
               {source_name}
             </span>
           </div>

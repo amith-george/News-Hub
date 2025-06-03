@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, use } from 'react';
+import React, { useEffect, useState } from 'react';
 import Newscard from '@/components/NewsCard';
 import { useCountry } from '@/context/CountryContext';
 import { format } from 'date-fns';
@@ -23,15 +23,26 @@ type Props = {
   }>;
 };
 
+// Define a proper type for the API news item to avoid using 'any'
+type NewsItem = {
+  guid?: string;
+  title?: string;
+  description?: string;
+  image_url?: string | null;
+  pubDate?: string;
+  source_id?: string;
+  link?: string;
+};
+
 export default function CategoryPage({ params }: Props) {
-  const { category } = use(params);
+  const { category } = React.use(params);
   const { country } = useCountry();
 
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [totalResults, setTotalResults] = useState(0); 
+  const [totalResults, setTotalResults] = useState(0);
   const [pageTokens, setPageTokens] = useState<string[]>(['']); // index = pageNumber - 1
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -51,7 +62,9 @@ export default function CategoryPage({ params }: Props) {
       setError(null);
 
       try {
-        let url = `/api/news?country=${country.code.toLowerCase()}&category=${encodeURIComponent(category)}`;
+        let url = `/api/news?country=${country.code.toLowerCase()}&category=${encodeURIComponent(
+          category
+        )}`;
         if (currentPageToken) {
           url += `&page=${encodeURIComponent(currentPageToken)}`;
         }
@@ -64,21 +77,23 @@ export default function CategoryPage({ params }: Props) {
 
         const data = await res.json();
 
-        const formattedArticles: Article[] = (data.results || []).map((item: any, i: number) => ({
-          article_id: item.guid || String(i),
-          title: item.title || 'No Title',
-          description: item.description || 'No Description',
-          image_url: item.image_url || null,
-          formattedDate: item.pubDate
-            ? format(new Date(item.pubDate), 'dd MMM yyyy, HH:mm')
-            : 'Unknown Date',
-          source_name: item.source_id || 'Unknown Source',
-          source_icon: '/default-news.jpg',
-          link: item.link || '#',
-        }));
+        const formattedArticles: Article[] = (data.results || []).map(
+          (item: NewsItem, i: number) => ({
+            article_id: item.guid || String(i),
+            title: item.title || 'No Title',
+            description: item.description || 'No Description',
+            image_url: item.image_url || null,
+            formattedDate: item.pubDate
+              ? format(new Date(item.pubDate), 'dd MMM yyyy, HH:mm')
+              : 'Unknown Date',
+            source_name: item.source_id || 'Unknown Source',
+            source_icon: '/default-news.jpg',
+            link: item.link || '#',
+          })
+        );
 
         setArticles(formattedArticles);
-        setTotalResults(data.totalResults || 0); 
+        setTotalResults(data.totalResults || 0);
 
         if (data.nextPageToken) {
           setPageTokens((prev) => {
@@ -95,7 +110,7 @@ export default function CategoryPage({ params }: Props) {
     }
 
     fetchNews();
-  }, [country, category, currentPageToken]);
+  }, [country, category, currentPageToken, currentPage]); // added currentPage here
 
   function handlePageChange(pageNumber: number) {
     setCurrentPage(pageNumber);

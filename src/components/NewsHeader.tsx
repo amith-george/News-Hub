@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FiSearch } from 'react-icons/fi';
 import { usePathname, useRouter } from 'next/navigation';
 import { useCountry } from '@/context/CountryContext';
@@ -9,7 +9,7 @@ const today = new Date();
 const initialDate = today.toLocaleDateString('en-GB').replace(/\//g, '-');
 
 export default function NewsHeader() {
-  const [currentDate, setCurrentDate] = useState(initialDate);
+  const [currentDate] = useState(initialDate);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
 

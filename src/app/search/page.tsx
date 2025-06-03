@@ -7,6 +7,16 @@ import { useCountry } from '@/context/CountryContext';
 import PaginationControls from '@/components/PaginationControls';
 import { format } from 'date-fns';
 
+type RawArticle = {
+  guid?: string;
+  title?: string;
+  description?: string;
+  image_url?: string | null;
+  pubDate?: string;
+  source_id?: string;
+  link?: string;
+};
+
 type Article = {
   article_id: string;
   title: string;
@@ -55,7 +65,7 @@ export default function SearchPage() {
         if (!res.ok) throw new Error('Failed to fetch search results');
         const data = await res.json();
 
-        const formattedArticles: Article[] = (data.results || []).map((item: any, i: number) => ({
+        const formattedArticles: Article[] = (data.results || []).map((item: RawArticle, i: number) => ({
           article_id: item.guid || String(i),
           title: item.title || 'No Title',
           description: item.description || 'No Description',
@@ -69,7 +79,7 @@ export default function SearchPage() {
         }));
 
         setArticles(formattedArticles);
-        setTotalResults(data.totalResults || 0); // <-- Set total results count here
+        setTotalResults(data.totalResults || 0);
 
         // Add next page token if available and not already stored
         if (data.nextPage && pageTokens.length < page + 1) {
@@ -83,7 +93,7 @@ export default function SearchPage() {
     }
 
     fetchSearchResults();
-  }, [searchQuery, country.code, page]);
+  }, [searchQuery, country.code, page, pageTokens]);
 
   if (!searchQuery) {
     return <p className="text-center py-20">No search term provided.</p>;
@@ -106,7 +116,6 @@ export default function SearchPage() {
         )}
       </div>
 
-      {/* Show pagination only if total results > 9 */}
       {totalResults > 9 && (
         <PaginationControls
           currentPage={page}

@@ -28,7 +28,7 @@ export default function Home() {
   const [pageTokens, setPageTokens] = useState<string[]>(['']);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const currentPageToken = pageTokens[currentPage - 1] ?? null;
+  const currentPageToken = pageTokens[currentPage - 1] ?? '';
 
   useEffect(() => {
     setPageTokens(['']);
@@ -66,7 +66,7 @@ export default function Home() {
         }));
 
         setArticles(formattedArticles);
-        setTotalResults(data.totalResults || 0); // <-- Set totalResults from API
+        setTotalResults(data.totalResults || 0);
 
         if (data.nextPageToken) {
           setPageTokens((prev) => {
