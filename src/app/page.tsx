@@ -17,6 +17,16 @@ type Article = {
   link: string;
 };
 
+type RawArticle = {
+  guid?: string;
+  title?: string;
+  description?: string;
+  image_url?: string | null;
+  pubDate?: string;
+  source_id?: string;
+  link?: string;
+};
+
 export default function Home() {
   const { country } = useCountry();
 
@@ -52,7 +62,7 @@ export default function Home() {
         if (!res.ok) throw new Error('Failed to fetch news');
         const data = await res.json();
 
-        const formattedArticles: Article[] = (data.results || []).map((item: any, i: number) => ({
+        const formattedArticles: Article[] = (data.results || []).map((item: RawArticle, i: number) => ({
           article_id: item.guid || String(i),
           title: item.title || 'No Title',
           description: item.description || 'No Description',
@@ -75,15 +85,16 @@ export default function Home() {
             return updated;
           });
         }
-      } catch (err: any) {
-        setError(err.message || 'Error fetching news');
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        setError(errorMessage || 'Error fetching news');
       } finally {
         setLoading(false);
       }
     }
 
     fetchNews();
-  }, [country, currentPageToken]);
+  }, [country, currentPageToken, currentPage]);
 
   function handlePageChange(pageNumber: number) {
     setCurrentPage(pageNumber);

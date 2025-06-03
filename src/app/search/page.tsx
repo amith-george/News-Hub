@@ -39,7 +39,7 @@ export default function SearchPage() {
   const [totalResults, setTotalResults] = useState(0);
 
   const [page, setPage] = useState(1);
-  const [pageTokens, setPageTokens] = useState<string[]>(['']); 
+  const [pageTokens, setPageTokens] = useState<string[]>(['']);
 
   useEffect(() => {
     if (!searchQuery || !country.code) return;
@@ -65,35 +65,43 @@ export default function SearchPage() {
         if (!res.ok) throw new Error('Failed to fetch search results');
         const data = await res.json();
 
-        const formattedArticles: Article[] = (data.results || []).map((item: RawArticle, i: number) => ({
-          article_id: item.guid || String(i),
-          title: item.title || 'No Title',
-          description: item.description || 'No Description',
-          image_url: item.image_url || null,
-          formattedDate: item.pubDate
-            ? format(new Date(item.pubDate), 'dd MMM yyyy, HH:mm')
-            : 'Unknown Date',
-          source_name: item.source_id || 'Unknown Source',
-          source_icon: '/default-news.jpg',
-          link: item.link || '#',
-        }));
+        const formattedArticles: Article[] = (data.results || []).map(
+          (item: RawArticle, i: number) => ({
+            article_id: item.guid || String(i),
+            title: item.title || 'No Title',
+            description: item.description || 'No Description',
+            image_url: item.image_url || null,
+            formattedDate: item.pubDate
+              ? format(new Date(item.pubDate), 'dd MMM yyyy, HH:mm')
+              : 'Unknown Date',
+            source_name: item.source_id || 'Unknown Source',
+            source_icon: '/default-news.jpg',
+            link: item.link || '#',
+          })
+        );
 
         setArticles(formattedArticles);
         setTotalResults(data.totalResults || 0);
 
         // Add next page token if available and not already stored
         if (data.nextPage && pageTokens.length < page + 1) {
-          setPageTokens((prev) => [...prev, data.nextPage]);
+          setPageTokens((prev: string[]) => [...prev, data.nextPage]);
         }
-      } catch (err: any) {
-        setError(err.message || 'Error fetching search results');
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('Error fetching search results');
+        }
       } finally {
         setLoading(false);
       }
     }
 
     fetchSearchResults();
-  }, [searchQuery, country.code, page, pageTokens]);
+    // We intentionally exclude pageTokens from dependency array to prevent infinite loops
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery, country.code, page]);
 
   if (!searchQuery) {
     return <p className="text-center py-20">No search term provided.</p>;

@@ -43,7 +43,6 @@ const Newscard: React.FC<{ article: NewsCardProps['article'] }> = ({ article }) 
           className="object-cover w-full h-full"
           loading="lazy"
           decoding="async"
-          importance="low"
         />
       </div>
 

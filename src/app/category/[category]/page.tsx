@@ -18,9 +18,9 @@ type Article = {
 };
 
 type Props = {
-  params: Promise<{
+  params: {
     category: string;
-  }>;
+  };
 };
 
 // Define a proper type for the API news item to avoid using 'any'
@@ -35,7 +35,7 @@ type NewsItem = {
 };
 
 export default function CategoryPage({ params }: Props) {
-  const { category } = React.use(params);
+  const { category } = params;
   const { country } = useCountry();
 
   const [articles, setArticles] = useState<Article[]>([]);
@@ -48,7 +48,7 @@ export default function CategoryPage({ params }: Props) {
 
   const currentPageToken = pageTokens[currentPage - 1] ?? null;
 
-  // Reset when country or category changes
+  // Reset pagination when country or category changes
   useEffect(() => {
     setPageTokens(['']);
     setCurrentPage(1);
@@ -102,15 +102,17 @@ export default function CategoryPage({ params }: Props) {
             return updated;
           });
         }
-      } catch (err: any) {
-        setError(err.message || 'Error fetching news');
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Error fetching news';
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
     }
 
     fetchNews();
-  }, [country, category, currentPageToken, currentPage]); // added currentPage here
+  }, [country, category, currentPageToken, currentPage]);
 
   function handlePageChange(pageNumber: number) {
     setCurrentPage(pageNumber);
