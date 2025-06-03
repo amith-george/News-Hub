@@ -1,6 +1,4 @@
-'use client';
-
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Newscard from '@/components/NewsCard';
 import { useCountry } from '@/context/CountryContext';
 import { format } from 'date-fns';
@@ -34,27 +32,27 @@ type NewsItem = {
   link?: string;
 };
 
-export default function CategoryPage({ params }: Props) {
-  const { category } = params;
+// Client component to handle state, effects, and rendering
+const CategoryNewsClient: React.FC<{ category: string }> = ({ category }) => {
   const { country } = useCountry();
 
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [articles, setArticles] = React.useState<Article[]>([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
 
-  const [totalResults, setTotalResults] = useState(0);
-  const [pageTokens, setPageTokens] = useState<string[]>(['']); // index = pageNumber - 1
-  const [currentPage, setCurrentPage] = useState(1);
+  const [totalResults, setTotalResults] = React.useState(0);
+  const [pageTokens, setPageTokens] = React.useState<string[]>(['']); // index = pageNumber - 1
+  const [currentPage, setCurrentPage] = React.useState(1);
 
   const currentPageToken = pageTokens[currentPage - 1] ?? null;
 
   // Reset pagination when country or category changes
-  useEffect(() => {
+  React.useEffect(() => {
     setPageTokens(['']);
     setCurrentPage(1);
   }, [country, category]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!country?.code || !category) return;
 
     async function fetchNews() {
@@ -153,4 +151,8 @@ export default function CategoryPage({ params }: Props) {
       />
     </main>
   );
+};
+
+export default function CategoryPage({ params }: Props) {
+  return <CategoryNewsClient category={params.category} />;
 }
