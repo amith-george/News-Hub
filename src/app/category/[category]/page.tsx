@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, use } from 'react';
 import Newscard from '@/components/NewsCard';
-import { format } from 'date-fns';
 import { useCountry } from '@/context/CountryContext';
+import { format } from 'date-fns';
 import PaginationControls from '@/components/PaginationControls';
 
 type Article = {
@@ -17,7 +17,14 @@ type Article = {
   link: string;
 };
 
-export default function Home() {
+type Props = {
+  params: Promise<{
+    category: string;
+  }>;
+};
+
+export default function CategoryPage({ params }: Props) {
+  const { category } = use(params);
   const { country } = useCountry();
 
   const [articles, setArticles] = useState<Article[]>([]);
@@ -25,31 +32,36 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
 
   const [totalResults, setTotalResults] = useState(0); 
-  const [pageTokens, setPageTokens] = useState<string[]>(['']);
+  const [pageTokens, setPageTokens] = useState<string[]>(['']); // index = pageNumber - 1
   const [currentPage, setCurrentPage] = useState(1);
 
   const currentPageToken = pageTokens[currentPage - 1] ?? null;
 
+  // Reset when country or category changes
   useEffect(() => {
     setPageTokens(['']);
     setCurrentPage(1);
-  }, [country]);
+  }, [country, category]);
 
   useEffect(() => {
-    if (!country?.code || country.code === 'wo') return;
+    if (!country?.code || !category) return;
 
     async function fetchNews() {
       setLoading(true);
       setError(null);
 
       try {
-        let url = `/api/news?country=${country.code.toLowerCase()}`;
+        let url = `/api/news?country=${country.code.toLowerCase()}&category=${encodeURIComponent(category)}`;
         if (currentPageToken) {
           url += `&page=${encodeURIComponent(currentPageToken)}`;
         }
 
         const res = await fetch(url);
-        if (!res.ok) throw new Error('Failed to fetch news');
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.error || 'Failed to fetch news');
+        }
+
         const data = await res.json();
 
         const formattedArticles: Article[] = (data.results || []).map((item: any, i: number) => ({
@@ -66,7 +78,7 @@ export default function Home() {
         }));
 
         setArticles(formattedArticles);
-        setTotalResults(data.totalResults || 0); // <-- Set totalResults from API
+        setTotalResults(data.totalResults || 0); 
 
         if (data.nextPageToken) {
           setPageTokens((prev) => {
@@ -83,22 +95,35 @@ export default function Home() {
     }
 
     fetchNews();
-  }, [country, currentPageToken]);
+  }, [country, category, currentPageToken]);
 
   function handlePageChange(pageNumber: number) {
     setCurrentPage(pageNumber);
   }
 
-  if (loading) return <p className="text-center py-20">Loading news...</p>;
-  if (error) return <p className="text-center py-20 text-red-600">{error}</p>;
+  if (loading)
+    return (
+      <main className="min-h-screen flex justify-center items-center">
+        <p>Loading news for {category}...</p>
+      </main>
+    );
+
+  if (error)
+    return (
+      <main className="min-h-screen flex justify-center items-center text-red-600">
+        <p>Error: {error}</p>
+      </main>
+    );
 
   return (
     <main className="min-h-screen bg-white text-foreground px-4 sm:px-6 lg:px-12 py-10">
-      <h1 className="text-4xl font-bold text-center mb-12">Latest News</h1>
+      <h1 className="text-4xl font-bold text-center mb-12 capitalize">{category} News</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
         {articles.length === 0 ? (
-          <p className="col-span-full text-center">No articles found.</p>
+          <p className="col-span-full text-center text-gray-500">
+            No news found for the selected category and country.
+          </p>
         ) : (
           articles.map((article) => <Newscard key={article.article_id} article={article} />)
         )}
