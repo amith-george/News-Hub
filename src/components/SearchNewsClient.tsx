@@ -94,7 +94,7 @@ export default function SearchNewsClient() {
     }
 
     fetchSearchResults();
-  }, [searchQuery, country.code, page]);
+  }, [searchQuery, country.code, page, pageTokens]);
 
   if (!searchQuery) {
     return <p className="text-center py-20">No search term provided.</p>;
