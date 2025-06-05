@@ -11,12 +11,14 @@ export default function ClientLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [showLoader, setShowLoader] = useState(false);
+  const [showLoader, setShowLoader] = useState<boolean | null>(null); // null = unknown screen size
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
+    const mobile = window.innerWidth < 640;
+    setIsMobile(mobile);
 
-    if (isMobile) {
+    if (mobile) {
       setShowLoader(false);
       return;
     }
@@ -37,6 +39,8 @@ export default function ClientLayout({
     }
   }, []);
 
+  // ⛔ Don't render anything until we've determined if it's mobile or not
+  if (showLoader === null) return null;
 
   return (
     <CountryProvider>
