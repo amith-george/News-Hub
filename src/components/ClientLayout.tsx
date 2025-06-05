@@ -11,16 +11,9 @@ export default function ClientLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [showLoader, setShowLoader] = useState<boolean | null>(null); // null = unknown screen size
+  const [showLoader, setShowLoader] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const mobile = window.innerWidth < 640;
-
-    if (mobile) {
-      setShowLoader(false);
-      return;
-    }
-
     const hasVisited = sessionStorage.getItem("hasVisited");
 
     if (hasVisited) {
@@ -36,7 +29,6 @@ export default function ClientLayout({
       return () => clearTimeout(timer);
     }
   }, []);
-
 
   if (showLoader === null) return null;
 
