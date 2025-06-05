@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react"; // ⛔ Removed `useEffect`
+import { useEffect, useState } from "react";
 import Loader from "./Loader";
 import Navbar from "./Navbar";
 import NewsHeader from "./NewsHeader";
@@ -11,7 +11,26 @@ export default function ClientLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [showLoader] = useState(true); // ⛔ Don't include `setShowLoader` since it's unused
+  const [showLoader, setShowLoader] = useState(false);
+
+  useEffect(() => {
+    const isMobile = window.innerWidth < 640; // Tailwind's `sm:` breakpoint
+
+    const hasVisited = sessionStorage.getItem("hasVisited");
+
+    if (hasVisited || isMobile) {
+      setShowLoader(false);
+    } else {
+      sessionStorage.setItem("hasVisited", "true");
+      setShowLoader(true);
+
+      const timer = setTimeout(() => {
+        setShowLoader(false);
+      }, 2500);
+
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   return (
     <CountryProvider>
