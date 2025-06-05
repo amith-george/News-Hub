@@ -7,6 +7,8 @@ import { useCountry } from '@/context/CountryContext';
 import PaginationControls from '@/components/PaginationControls';
 import { format } from 'date-fns';
 
+export const dynamic = 'force-dynamic';
+
 type RawArticle = {
   guid?: string;
   title?: string;
