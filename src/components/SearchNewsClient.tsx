@@ -28,7 +28,7 @@ type Article = {
   link: string;
 };
 
-const SearchNewsClient: React.FC = () => {
+export default function SearchNewsClient() {
   const { country } = useCountry();
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('query') || '';
@@ -84,21 +84,16 @@ const SearchNewsClient: React.FC = () => {
         setTotalResults(data.totalResults || 0);
 
         if (data.nextPage && pageTokens.length < page + 1) {
-          setPageTokens((prev: string[]) => [...prev, data.nextPage]);
+          setPageTokens((prev) => [...prev, data.nextPage]);
         }
       } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError('Error fetching search results');
-        }
+        setError(err instanceof Error ? err.message : 'Error fetching search results');
       } finally {
         setLoading(false);
       }
     }
 
     fetchSearchResults();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, country.code, page]);
 
   if (!searchQuery) {
@@ -131,6 +126,4 @@ const SearchNewsClient: React.FC = () => {
       )}
     </main>
   );
-};
-
-export default SearchNewsClient;
+}
