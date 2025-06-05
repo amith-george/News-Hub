@@ -11,8 +11,8 @@ export default function ClientLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [showLoader, setShowLoader] = useState(false);
-
+  const [showLoader, setShowLoader] = useState(true);
+  /*
   useEffect(() => {
     const hasVisited = sessionStorage.getItem("hasVisited");
 
@@ -29,7 +29,7 @@ export default function ClientLayout({
       return () => clearTimeout(timer);
     }
   }, []);
-
+  */
   return (
     <CountryProvider>
       <Navbar />
