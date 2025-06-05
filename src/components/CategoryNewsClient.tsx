@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useParams } from 'next/navigation';
 import Newscard from '@/components/NewsCard';
 import { useCountry } from '@/context/CountryContext';
 import { format } from 'date-fns';
@@ -27,7 +28,17 @@ type NewsItem = {
   link?: string;
 };
 
-const CategoryNewsClient: React.FC<{ category: string }> = ({ category }) => {
+const CategoryNewsClient: React.FC = () => {
+  const params = useParams();
+  const rawCategory = params?.category;
+
+  const category =
+    typeof rawCategory === 'string'
+      ? rawCategory
+      : Array.isArray(rawCategory)
+      ? rawCategory[0] || ''
+      : '';
+
   const { country } = useCountry();
 
   const [articles, setArticles] = React.useState<Article[]>([]);
