@@ -14,11 +14,16 @@ export default function ClientLayout({
   const [showLoader, setShowLoader] = useState(false);
 
   useEffect(() => {
-    const isMobile = window.innerWidth < 640; // Tailwind's `sm:` breakpoint
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
+
+    if (isMobile) {
+      setShowLoader(false);
+      return;
+    }
 
     const hasVisited = sessionStorage.getItem("hasVisited");
 
-    if (hasVisited || isMobile) {
+    if (hasVisited) {
       setShowLoader(false);
     } else {
       sessionStorage.setItem("hasVisited", "true");
@@ -31,6 +36,7 @@ export default function ClientLayout({
       return () => clearTimeout(timer);
     }
   }, []);
+
 
   return (
     <CountryProvider>
