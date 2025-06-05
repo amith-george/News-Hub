@@ -2,10 +2,15 @@
 import React from 'react';
 import CategoryNewsClient from '@/components/CategoryNewsClient';
 
-export default function CategoryPage({
+type Params = {
+  category: string;
+};
+
+export default async function CategoryPage({
   params,
 }: {
-  params: { category: string };
+  params: Params;
 }) {
+  // No need to await anything here, but the async signature matches Next.js expectation.
   return <CategoryNewsClient category={params.category} />;
 }
