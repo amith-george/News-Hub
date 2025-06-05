@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useState } from "react"; // ⛔ Removed `useEffect`
 import Loader from "./Loader";
 import Navbar from "./Navbar";
 import NewsHeader from "./NewsHeader";
@@ -11,25 +11,8 @@ export default function ClientLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [showLoader, setShowLoader] = useState(true);
-  /*
-  useEffect(() => {
-    const hasVisited = sessionStorage.getItem("hasVisited");
+  const [showLoader] = useState(true); // ⛔ Don't include `setShowLoader` since it's unused
 
-    if (hasVisited) {
-      setShowLoader(false);
-    } else {
-      sessionStorage.setItem("hasVisited", "true");
-      setShowLoader(true);
-
-      const timer = setTimeout(() => {
-        setShowLoader(false);
-      }, 2500);
-
-      return () => clearTimeout(timer);
-    }
-  }, []);
-  */
   return (
     <CountryProvider>
       <Navbar />
