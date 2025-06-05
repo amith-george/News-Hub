@@ -2,12 +2,10 @@
 import React from 'react';
 import CategoryNewsClient from '@/components/CategoryNewsClient';
 
-type Props = {
-  params: {
-    category: string;
-  };
-};
-
-export default function CategoryPage({ params }: Props) {
+export default function CategoryPage({
+  params,
+}: {
+  params: { category: string };
+}) {
   return <CategoryNewsClient category={params.category} />;
 }
