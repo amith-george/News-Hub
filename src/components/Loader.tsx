@@ -74,7 +74,7 @@ const round2 = `
 
 const Loader = () => {
   return (
-    <div className="flex flex-col items-center justify-center gap-3">
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-3 bg-black">
       <style>{round1 + round2}</style>
 
       <div
