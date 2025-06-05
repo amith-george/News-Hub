@@ -5,32 +5,32 @@ import React from 'react';
 const round1 = `
   @keyframes round1 {
     0% {
-      left: -32px;
+      left: -2em;
       opacity: 100%;
       transform: skewX(0deg) rotate(0deg);
     }
     30% {
-      left: -96px;
+      left: -6em;
       opacity: 100%;
       transform: skewX(-25deg) rotate(25deg);
     }
     31% {
-      left: -96px;
+      left: -6em;
       opacity: 0%;
       transform: skewX(-25deg) rotate(25deg);
     }
     35% {
-      left: 112px;
+      left: 7em;
       opacity: 0%;
       transform: skewX(25deg) rotate(-25deg);
     }
     45% {
-      left: 112px;
+      left: 7em;
       opacity: 100%;
       transform: skewX(25deg) rotate(-25deg);
     }
     100% {
-      left: -32px;
+      left: -2em;
       opacity: 100%;
       transform: skewX(0deg) rotate(0deg);
     }
@@ -40,32 +40,32 @@ const round1 = `
 const round2 = `
   @keyframes round2 {
     0% {
-      left: 80px;
+      left: 5em;
       opacity: 100%;
       transform: skewX(0deg) rotate(0deg);
     }
     75% {
-      left: -112px;
+      left: -7em;
       opacity: 100%;
       transform: skewX(-25deg) rotate(25deg);
     }
     76% {
-      left: -112px;
+      left: -7em;
       opacity: 0%;
       transform: skewX(-25deg) rotate(25deg);
     }
     77% {
-      left: 128px;
+      left: 8em;
       opacity: 0%;
       transform: skewX(25deg) rotate(-25deg);
     }
     80% {
-      left: 128px;
+      left: 8em;
       opacity: 100%;
       transform: skewX(25deg) rotate(-25deg);
     }
     100% {
-      left: 80px;
+      left: 5em;
       opacity: 100%;
       transform: skewX(0deg) rotate(0deg);
     }
@@ -78,13 +78,13 @@ const Loader = () => {
       <style>{round1 + round2}</style>
 
       <div
-        className="relative rounded-full border-[3px] border-white overflow-hidden
-                   w-[90px] h-[90px] sm:w-[100px] sm:h-[100px] md:w-[120px] md:h-[120px]
+        className="relative rounded-full border-[0.15em] border-white overflow-hidden
+                   w-[6em] h-[6em] sm:w-[7em] sm:h-[7em] md:w-[7.5em] md:h-[7.5em]
                    max-w-[90vw]"
         style={{
           backgroundColor: '#3344c1',
           boxShadow:
-            'inset 0px 8px rgba(255,255,255,0.25), inset 0px -8px rgba(0,0,0,0.25)',
+            'inset 0em 0.5em rgba(255,255,255,0.25), inset 0em -0.5em rgba(0,0,0,0.25)',
         }}
       >
         {[0, 1, 2, 3].map((i) => (
@@ -92,10 +92,10 @@ const Loader = () => {
             key={i}
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 200 200"
-            className="absolute w-[80px] sm:w-[90px] md:w-[100px]"
+            className="absolute w-[5.5em] sm:w-[6.5em] md:w-[7em]"
             style={{
-              bottom: i === 0 || i === 3 ? (i === 0 ? '-28px' : '-32px') : undefined,
-              top: i === 1 ? '-40px' : i === 2 ? '-35px' : undefined,
+              bottom: i === 0 || i === 3 ? (i === 0 ? '-1.8em' : '-2em') : undefined,
+              top: i === 1 ? '-2.5em' : i === 2 ? '-2.2em' : undefined,
               animation: `${i === 0 || i === 1 ? 'round1' : 'round2'} 5s infinite linear`,
               animationDelay: i === 0 || i === 3 ? '0.75s' : '0s',
             }}
